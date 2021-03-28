@@ -1,0 +1,33 @@
+{
+  "name": "spreadsheet-gmail-filters",
+  "version": "1.0.0",
+  "description": "Store your gmail filters in a spreadsheet",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elutek/spreadsheet-gmail-filters.git"
+  },
+  "author": "Ela Lutek elalutek@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/elutek/spreadsheet-gmail-filters/issues"
+  },
+  "homepage": "https://github.com/elutek/spreadsheet-gmail-filters#readme",
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src/*.js --fix --quiet",
+    "test": "qunit",
+    "status": "./node_modules/.bin/clasp status|grep -v node_modules",
+    "pull": "./node_modules/.bin/clasp pull",
+    "push": "./node_modules/.bin/clasp push"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.3.0",
+    "eslint": "^7.23.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-async-await": "^0.0.0",
+    "eslint-plugin-qunit": "^6.0.0",
+    "qunit": "^2.14.1"
+  },
+  "eslintIgnore": [
+    "**/node_modules/**"
+  ]
+}
