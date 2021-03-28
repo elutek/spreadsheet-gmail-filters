@@ -55,18 +55,27 @@ class Rule {
       gmailThread.getMessages()[0].star();
     }
     return true;
-    // return this.toString();
   }
 
   toString() {
-    let result = 'markRead:' + this.markRead + ', archive:' + this.archive + ', star:' + this.star + ', ';
+    let condStr = '';
     if (this.filters) {
       for (const filter of this.filters) {
-        if (filter !== null) {
-          result += filter.toString();
+        if (filter !== null && filter.filter !== null && filter.filter !== undefined) {
+          condStr += filter.filter.toString();
         }
       }
     }
-    return this.labelNames + ': ' + result;
+    let actionStr = '' + this.labelNames;
+    if (this.markRead) {
+      actionStr += ' mark read';
+    }
+    if (!this.archive) {
+      actionStr += ' no archive';
+    }
+    if (this.star) {
+      actionStr += ' star';
+    }
+    return actionStr + ': ' + condStr;
   }
 }

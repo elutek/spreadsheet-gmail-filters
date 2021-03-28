@@ -10,7 +10,7 @@ function onOpen() {
     {name: 'Install', functionName: 'Install'},
     {name: 'Run Now - All', functionName: 'RunNowAll'},
     {name: 'Run Now - Selected', functionName: 'RunNowSelected'},
-    {name: 'Uninstall:', functionName: 'Uninstall'}
+    {name: 'Uninstall', functionName: 'Uninstall'}
   ]);
 }
 

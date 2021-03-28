@@ -60,7 +60,7 @@ function ReadRulesFromSpreadsheet(onlySelectedRules, spreadsheetApp) {
   for (const sheet of allSheets) {
     if (!shouldSkipSheet(sheet)) {
       const sheetName = sheet.getName();
-      Logger.log('Processing sheet', sheetName);
+      Logger.log('Processing sheet: ' + sheetName);
       const rows = onlySelectedRules ? sheet.getActiveRange().getValues() :
         sheet.getDataRange().getValues();
       for (const row of rows) {
@@ -68,12 +68,14 @@ function ReadRulesFromSpreadsheet(onlySelectedRules, spreadsheetApp) {
           try {
             const rule = CreateRuleFromRow(row);
             if (rule !== null && rule !== undefined) {
-              Logger.log('Found rule', rule.toString());
+              Logger.log('Found rule: ' + rule.toString());
               result.push(rule);
             }
           } catch (e) {
-            Logger.log('Exception when creating rule from row: ' + row);
+            Logger.log('Exception when creating rule from row: ' + row + ': ' + e);
           }
+        } else {
+          Logger.log('Skipping row: ' + row);
         }
       }
     }
@@ -83,17 +85,26 @@ function ReadRulesFromSpreadsheet(onlySelectedRules, spreadsheetApp) {
 }
 
 function CreateRuleFromRow(row) {
+  // Logger.log('Processing row ' + row);
   const labelNames = row[1].split(',');
   const actions = row[2].split(',');
   const filters = [];
-  for (let i = 3; i + 2 < row.length; i += 3) {
+  for (let i = 3; i < row.length; i += 3) {
+    if (row[i] === '') {
+      continue;
+    }
     const filterType = FilterType[row[i]];
     if (filterType === undefined || filterType === null) {
       throw new Error('Unrecognized filter type: ' + row[i]);
     }
-    const acceptEverything = filterType === FilterType.ACCEPT_EVERYTHING;
-    const conditionType = acceptEverything ? ConditionType.IS :
-      ConditionType[row[i + 1]];
+    if (filterType === FilterType.ACCEPT_EVERYTHING) {
+      filters.push(CreateFilter(filterType, ConditionType.IS, '', ''));
+      continue;
+    }
+    if ((i + 2 >= row.length) || (row[i + 1] === '' && row[i + 2] === '')) {
+      throw new Error('Found filter type but not condition and argument');
+    }
+    const conditionType = ConditionType[row[i + 1]];
     if (conditionType === undefined || conditionType === null) {
       throw new Error('Unrecognized condition type: ' + row[i + 1]);
     }
@@ -104,9 +115,7 @@ function CreateRuleFromRow(row) {
       arg = arg.substr(0, i);
       arg2 = arg.substr(i + 1);
     }
-    if (acceptEverything) {
-      arg = '';
-    } else if (arg === '' || (arg2 !== null && arg2 === '')) {
+    if (arg === '' || (arg2 !== null && arg2 === '')) {
       throw new Error('No argument in filter in row: ' + row);
     }
     filters.push(CreateFilter(filterType, conditionType, arg, arg2));

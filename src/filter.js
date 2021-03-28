@@ -80,12 +80,13 @@ class Filter {
   toString() {
     const a1 = this.arg === null ? '' : (',' + this.arg);
     const a2 = this.arg2 === null ? '' : (',' + this.arg2);
-    return 'if(' + this.displayFieldName + ',' + this.conditionType + a1 + a2 + ')';
+    return 'if(' + this.displayFieldName + ',' + ConditionType[this.conditionType] + a1 + a2 + ')';
   }
 }
 
 class AcceptEverythingFilter {
-  constructor() { }
+  constructor() {
+  }
   matchesMessage(gmailMessage) {
     return true;
   }
@@ -176,7 +177,7 @@ class SenderFilter {
 }
 
 function CreateFilter(filterType, conditionType, arg, arg2) {
-  if (filterType === FilterType.ONLY_TO && argType !== ConditionType.IS) {
+  if (filterType === FilterType.ONLY_TO && conditionType !== ConditionType.IS) {
     throw Error('only_to can be combined with \'is\' contdition only');
   }
   if (conditionType !== null && arg !== null) {
